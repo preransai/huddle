@@ -1,0 +1,33 @@
+{
+  "name": "huddle-client",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "author": "Preran Sai Yarramasu",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@fontsource-variable/bricolage-grotesque": "^5.3.0",
+    "@fontsource-variable/schibsted-grotesk": "^5.3.0",
+    "@tanstack/react-query": "^5.104.1",
+    "axios": "^1.20.0",
+    "lucide-react": "^1.52.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "react-router": "^8.4.0",
+    "socket.io-client": "^4.8.4",
+    "sonner": "^2.0.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@vitejs/plugin-react": "^6.1.2",
+    "tailwindcss": "^4.3.3",
+    "vite": "^8.3.3",
+    "vitest": "^5.0.3"
+  }
+}

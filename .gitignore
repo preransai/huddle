@@ -1,0 +1,33 @@
+# dependencies
+node_modules/
+
+# builds
+dist/
+client/dist/
+
+# environment
+.env
+.env.*
+!.env.example
+
+# uploaded files (the folder itself is kept)
+server/uploads/*
+!server/uploads/.gitkeep
+
+# tests and tooling
+coverage/
+.cache/
+.eslintcache
+.vite/
+
+# logs
+logs/
+*.log
+npm-debug.log*
+
+# editors and OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db

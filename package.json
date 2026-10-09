@@ -1,0 +1,34 @@
+{
+  "name": "huddle",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Huddle is a small social network: profiles, posts with images, likes, comments and live notifications.",
+  "author": "Preran Sai Yarramasu",
+  "license": "MIT",
+  "type": "module",
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev": "concurrently -k -n api,web -c cyan,magenta \"npm run dev -w server\" \"npm run dev -w client\"",
+    "build": "npm run build -w client",
+    "start": "npm start -w server",
+    "seed": "npm run seed -w server",
+    "test": "npm test -w server && npm test -w client",
+    "test:server": "npm test -w server",
+    "test:client": "npm test -w client",
+    "lint": "eslint ."
+  },
+  "engines": {
+    "node": "^22.22.0 || ^24.0.0 || >=26.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "concurrently": "^10.0.5",
+    "eslint": "^10.12.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.7",
+    "globals": "^17.13.0"
+  }
+}

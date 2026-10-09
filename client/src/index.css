@@ -1,0 +1,713 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/bricolage-grotesque/standard.css';
+@import '@fontsource-variable/schibsted-grotesk/wght.css';
+
+/* Huddle: "the campus zine & notice board". The page is the board, posts are riso-printed flyers
+   pinned to it. Four inks only (pink, blue, yellow, black); status colours are their overprints. */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------- theme tokens (switch on html.dark) ---------- */
+:root {
+  --hd-board: #EEF1F4;
+  --hd-sheet: #FFFFFF;
+  --hd-sheet-hi: #F3F5F8;
+  --hd-ink: #141416;
+  --hd-ink-2: #464A52;
+  --hd-ink-3: #5C6069;
+  --hd-line: #141416;
+  --hd-rule: #A9AEB7;
+  --hd-shadow: #141416;
+  --hd-pink-tint: #FFE6F3;
+  --hd-blue-ink: #00639E;
+  --hd-danger-ink: #A82410;
+  --hd-danger-tint: #FFE9E0;
+  --hd-success: #006D00;
+  --hd-focus: #0078BF;
+  --hd-blend: multiply;
+  --hd-tape: rgb(255 232 0 / 0.85);
+  --hd-plate-keyline: 1.5px 1.5px 0 0 #141416;
+}
+.dark {
+  --hd-board: #0C0C0E;
+  --hd-sheet: #1A1A1E;
+  --hd-sheet-hi: #232328;
+  --hd-ink: #F0F1F3;
+  --hd-ink-2: #C4C7CD;
+  --hd-ink-3: #9DA1A9;
+  --hd-line: #E6E7EA;
+  --hd-rule: #4A4D55;
+  --hd-shadow: #000000;
+  --hd-pink-tint: #3A1A2C;
+  --hd-blue-ink: #5DB6F5;
+  --hd-danger-ink: #FF5A3C;
+  --hd-danger-tint: #3A1B12;
+  --hd-success: #5BD16A;
+  --hd-focus: #FFE800;
+  --hd-blend: screen;
+  --hd-plate-keyline: none;
+}
+
+@theme {
+  /* The default palette, radii and shadows are removed: only the inks below exist. */
+  --color-*: initial;
+  --radius-*: initial;
+  --shadow-*: initial;
+
+  /* fixed inks, identical in both themes */
+  --color-riso-pink: #FF48B0;
+  --color-riso-blue: #0078BF;
+  --color-riso-yellow: #FFE800;
+  --color-riso-black: #141416;
+  --color-paper: #FFFFFF;
+  --color-overprint: #002284; /* pink x blue */
+  --color-danger: #FF4100; /* pink x yellow */
+  --color-success-fill: #006D00; /* blue x yellow */
+  --color-night: #0C0C0E;
+
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+
+  --font-sans: 'Schibsted Grotesk Variable', 'Helvetica Neue', Arial, sans-serif;
+  --font-display: 'Bricolage Grotesque Variable', 'Arial Narrow', Arial, sans-serif;
+
+  --animate-stamp: stamp 260ms cubic-bezier(0.2, 0.9, 0.3, 1.3);
+  --animate-fade-in: fade-in 150ms ease-out;
+  --animate-drop-in: drop-in 140ms ease-out;
+
+  @keyframes stamp {
+    0% { transform: scale(1.45) rotate(-18deg); }
+    60% { transform: scale(0.92) rotate(-6deg); }
+    100% { transform: scale(1) rotate(-8deg); }
+  }
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes drop-in {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: none; }
+  }
+}
+
+@theme inline {
+  --color-board: var(--hd-board);
+  --color-sheet: var(--hd-sheet);
+  --color-sheet-hi: var(--hd-sheet-hi);
+  --color-ink: var(--hd-ink);
+  --color-ink-2: var(--hd-ink-2);
+  --color-ink-3: var(--hd-ink-3);
+  --color-line: var(--hd-line);
+  --color-rule: var(--hd-rule);
+  --color-pink-tint: var(--hd-pink-tint);
+  --color-blue-ink: var(--hd-blue-ink);
+  --color-danger-ink: var(--hd-danger-ink);
+  --color-danger-tint: var(--hd-danger-tint);
+  --color-success: var(--hd-success);
+  --color-focus: var(--hd-focus);
+
+  /* a "pass" is a second, solid ink pass under something you can press; a "lift" floats */
+  --shadow-pass-pink: 4px 4px 0 0 #FF48B0;
+  --shadow-pass-blue: 4px 4px 0 0 #0078BF;
+  --shadow-tack: 2px 2px 0 0 var(--hd-shadow);
+  --shadow-press: 3px 3px 0 0 var(--hd-shadow);
+  --shadow-lift: 6px 6px 0 0 var(--hd-shadow);
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+  body {
+    background-color: var(--hd-board);
+    background-image: url('./assets/board-screen-light.svg');
+    background-size: 6px 6px;
+    color: var(--hd-ink);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: clip; /* tape hanging past a phone's edge can never scroll sideways */
+  }
+  .dark body {
+    background-image: url('./assets/board-screen-dark.svg');
+  }
+  :focus-visible {
+    outline: 3px solid var(--hd-focus);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: #FFE800;
+    color: #141416;
+  }
+  dialog::backdrop {
+    background-color: rgb(12 12 14 / 0.42);
+    background-image: url('./assets/screen-ink.svg');
+    background-size: 6px 6px;
+  }
+}
+
+/* ---------- type scale ---------- */
+@utility type-poster {
+  font-family: var(--font-display);
+  font-weight: 760;
+  font-size: clamp(92px, 24vw, 128px);
+  line-height: 0.78;
+  letter-spacing: -0.008em;
+  font-stretch: 80%;
+}
+@utility type-strap {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  font-stretch: 86%;
+  text-wrap: balance;
+  max-width: 24ch;
+  @media (width < 40rem) {
+    font-size: 23px;
+  }
+}
+@utility type-h1 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 34px;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  font-stretch: 84%;
+  @media (width < 40rem) {
+    font-size: 30px;
+  }
+}
+@utility type-h2 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 23px;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  font-stretch: 84%;
+}
+@utility type-h3 {
+  font-family: var(--font-display);
+  font-weight: 750;
+  font-size: 21px;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  font-stretch: 88%;
+}
+@utility type-wordmark {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: -0.035em;
+  font-stretch: 82%;
+  @media (width < 48rem) {
+    font-size: 27px;
+  }
+}
+@utility type-nav {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 19px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  font-stretch: 92%;
+}
+@utility type-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1.15;
+  letter-spacing: -0.012em;
+  font-stretch: 94%;
+}
+@utility type-numeral {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 21px;
+  line-height: 1;
+  font-stretch: 80%;
+  font-variant-numeric: tabular-nums;
+}
+@utility type-post {
+  font-size: 16px;
+  line-height: 1.58;
+}
+@utility type-body {
+  font-size: 15px;
+  line-height: 1.5;
+}
+@utility type-ui {
+  font-size: 14px;
+  line-height: 1;
+  font-weight: 600;
+}
+@utility type-meta {
+  font-size: 13.5px;
+  line-height: 1.35;
+  color: var(--hd-ink-3);
+}
+@utility type-micro {
+  font-size: 11px;
+  line-height: 1.1;
+  font-weight: 600;
+}
+/* single-line headings that may truncate: clip with a 4px margin so descenders and the
+   misregistered copy stay whole; a long title still ends in one ellipsis */
+@utility truncate-print {
+  overflow: clip;
+  overflow-clip-margin: 4px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-bottom: 2px;
+}
+
+/* ---------- print details ---------- */
+/* misregistration: the heading printed again in pink, a couple of px off (see Misregister.jsx) */
+@utility misreg {
+  position: relative;
+  display: inline-block;
+  isolation: isolate;
+  max-width: 100%;
+}
+
+/* thumbtack holding a flyer to the board; its ink comes from the post's print run */
+@utility tack {
+  position: absolute;
+  top: -10px;
+  left: calc(50% + var(--tack-x, 0px));
+  z-index: 1;
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  border: 2px solid var(--hd-line);
+  transform: translateX(-50%);
+  &::after {
+    content: '';
+    position: absolute;
+    left: 3px;
+    top: 3px;
+    width: 5px;
+    height: 5px;
+    border-radius: 9999px;
+    background: rgb(255 255 255 / 0.85);
+  }
+  @media (forced-colors: active) {
+    display: none;
+  }
+}
+
+/* the misprinted second plate: the frame printed again in the run ink, a few px off and a hair
+   skewed, with a 25% dot screen of that ink. The plated element must be position: relative, must
+   not be a stacking context and must not clip its overflow. */
+@utility plate {
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    z-index: -1;
+    pointer-events: none;
+    border: 2px solid var(--plate-ink);
+    background-size: 6px 6px;
+    mix-blend-mode: var(--hd-blend);
+    transform: translate(var(--plate-x, 5px), var(--plate-y, 5px)) rotate(var(--plate-r, 0deg));
+  }
+  @media (forced-colors: active) {
+    &::after {
+      display: none;
+    }
+  }
+}
+@utility plate-blue {
+  --plate-ink: #0078BF;
+  &::after {
+    background-image: url('./assets/plate-screen-blue.svg');
+  }
+}
+@utility plate-pink {
+  --plate-ink: #FF48B0;
+  &::after {
+    background-image: url('./assets/plate-screen-pink.svg');
+  }
+}
+@utility plate-yellow {
+  --plate-ink: #FFE800;
+  &::after {
+    background-image: url('./assets/plate-screen-yellow.svg');
+    box-shadow: var(--hd-plate-keyline);
+  }
+}
+
+/* hand-cut tape: an opaque-ish yellow strip with torn ends */
+@utility tape {
+  position: absolute;
+  z-index: 2;
+  width: 60px;
+  height: 20px;
+  pointer-events: none;
+  background: var(--hd-tape);
+  clip-path: polygon(0 0, 5px 17%, 1px 33%, 6px 50%, 0 67%, 5px 83%, 1px 100%, calc(100% - 1px) 100%,
+    calc(100% - 6px) 83%, 100% 67%, calc(100% - 5px) 50%, calc(100% - 1px) 33%, calc(100% - 6px) 17%, 100% 0);
+  @media (forced-colors: active) {
+    display: none;
+  }
+}
+@utility tape-tl {
+  top: -9px;
+  left: -35px;
+  rotate: -32deg;
+}
+@utility tape-tr {
+  top: -9px;
+  right: -35px;
+  rotate: 32deg;
+}
+@utility tape-top {
+  top: -12px;
+  height: 22px;
+  width: 96px;
+  left: calc(50% - 48px + var(--tape-x, 0px));
+  rotate: var(--tape-r, -3deg);
+}
+
+/* die-cut sticker: round, 2px ink edge */
+@utility sticker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border-width: 2px;
+  border-style: solid;
+  border-color: var(--hd-line);
+  @media (forced-colors: active) {
+    forced-color-adjust: none;
+  }
+}
+
+/* selection: yellow fill + a 4px riso-black leading bar (the bar is the indicator in light mode,
+   the fill in dark mode). Keyboard focus in menus adds a 2px inset ink frame. */
+@utility selected-row {
+  background-color: #FFE800;
+  color: #141416;
+  box-shadow: inset 4px 0 0 #141416;
+  & :is(.meta, .rank, .tag-hash) {
+    color: #141416;
+  }
+  @media (forced-colors: active) {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+    box-shadow: none;
+    & * {
+      color: HighlightText;
+    }
+  }
+}
+@utility focus-row {
+  @apply selected-row;
+  outline: 2px solid #141416;
+  outline-offset: -2px;
+  @media (forced-colors: active) {
+    outline-color: HighlightText;
+  }
+}
+
+/* fluorescent highlighter swipe, with a 2px ink key pass printed under it */
+@utility highlighter {
+  position: relative;
+  z-index: 0;
+  color: #141416;
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 12% -7px 2% -6px;
+    rotate: -1.4deg;
+    clip-path: polygon(1% 14%, 99% 0, 100% 86%, 0 100%);
+  }
+  &::before {
+    z-index: -1;
+    background: #FF48B0;
+  }
+  &::after {
+    z-index: -2;
+    background: var(--hd-line);
+    translate: 2px 2.5px;
+  }
+  @media (forced-colors: active) {
+    forced-color-adjust: none;
+    color: HighlightText;
+    &::before {
+      background: Highlight;
+    }
+    &::after {
+      display: none;
+    }
+  }
+}
+
+/* dotted leader (contents page / gig line-up) between a label and its count */
+@utility leader {
+  flex: 1 1 0%;
+  min-width: 12px;
+  border-bottom: 2px dotted var(--hd-rule);
+  transform: translateY(-4px);
+}
+
+/* paper: flyers, dialogs, menus, posters. Written with longhand utilities (not the `border`
+   shorthand) so it sorts before border-dashed / border-ink-3 etc., which can then modify it. */
+@utility sheet {
+  @apply border-2 border-line bg-sheet;
+}
+
+/* loading placeholder: unprinted paper with the board's dot screen */
+@utility skeleton {
+  background-color: var(--hd-sheet-hi);
+  background-image: url('./assets/board-screen-light.svg');
+  background-size: 6px 6px;
+}
+
+/* comic speech balloon, tail pointing left at the speaker */
+@utility balloon {
+  position: relative;
+  border: 2px solid var(--hd-line);
+  background: var(--hd-sheet);
+  border-radius: 6px;
+  padding: 9px 14px 11px;
+  &::before {
+    content: '';
+    position: absolute;
+    left: -11px;
+    top: 9px;
+    border-style: solid;
+    border-width: 7px 11px 7px 0;
+    border-color: transparent var(--hd-line) transparent transparent;
+  }
+  &::after {
+    content: '';
+    position: absolute;
+    left: -7.5px;
+    top: 11px;
+    border-style: solid;
+    border-width: 5px 8px 5px 0;
+    border-color: transparent var(--hd-sheet) transparent transparent;
+  }
+}
+
+/* ---------- controls ---------- */
+@utility btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-width: 2px;
+  border-style: solid;
+  border-color: var(--hd-line);
+  border-radius: 4px;
+  padding: 0.625rem 1rem;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  transition: translate 80ms ease, transform 80ms ease, box-shadow 80ms ease, background-color 80ms ease;
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+@utility btn-primary {
+  @apply btn bg-ink text-sheet shadow-pass-pink focus-visible:outline-offset-[6px] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none disabled:translate-0 disabled:border-dashed disabled:border-ink-3 disabled:bg-sheet-hi disabled:text-ink-3 disabled:shadow-none;
+}
+@utility btn-secondary {
+  @apply btn bg-sheet text-ink shadow-press hover:bg-sheet-hi focus-visible:outline-offset-[6px] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none disabled:opacity-60;
+}
+@utility btn-ghost {
+  @apply btn border-transparent bg-transparent text-ink-2 hover:border-line hover:text-ink;
+}
+@utility btn-blue {
+  @apply btn bg-riso-blue text-paper shadow-tack focus-visible:outline-offset-[6px] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none;
+}
+@utility btn-danger {
+  @apply btn bg-danger text-riso-black shadow-press focus-visible:outline-offset-[6px] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none;
+}
+@utility icon-btn {
+  display: inline-flex;
+  width: 2.25rem;
+  height: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  border: 2px solid transparent;
+  color: var(--hd-ink);
+  &:hover {
+    border-color: var(--hd-line);
+    background-color: var(--hd-sheet);
+  }
+}
+@utility input {
+  @apply w-full rounded-sm border-2 border-line bg-sheet px-3 py-2.5 text-[15px] font-medium text-ink placeholder:text-ink-3 focus:outline-3 focus:outline-offset-2 focus:outline-focus;
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ---------- unlayered rules (win over utilities where they overlap) ---------- */
+
+/* the misregistered copy of a headline (Misregister.jsx renders it aria-hidden) */
+.misreg-copy {
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  color: #FF48B0;
+  mix-blend-mode: var(--hd-blend);
+  transform: translate(var(--misreg-x, 2px), var(--misreg-y, 1.5px));
+  pointer-events: none;
+  user-select: none;
+  white-space: inherit;
+}
+.truncate-print > .misreg-copy {
+  overflow: clip;
+  overflow-clip-margin: 4px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* auth masthead: the band is printed ink, not stock, so it pins its own blend.
+   Light: blue wordmark + pink misregister (navy core, pink fringe). Dark: white ink + blue. */
+.masthead-word {
+  color: #0078BF;
+  --misreg-x: 5px;
+  --misreg-y: 3px;
+}
+.masthead-word .misreg-copy {
+  color: #FF48B0;
+  mix-blend-mode: multiply;
+}
+.dark .masthead-word {
+  color: #F0F1F3;
+}
+.dark .masthead-word .misreg-copy {
+  color: #0078BF;
+  mix-blend-mode: screen;
+}
+
+.dark .skeleton {
+  background-image: url('./assets/board-screen-dark.svg');
+}
+
+/* Sonner. Its stylesheet is injected after ours, so these selectors out-rank it on specificity.
+   data-styled='true' keeps the frame off toast.custom notifications, which bring their own sheet.
+   The 360px stack width is passed as the Toaster's style (Sonner sets --width inline). */
+html [data-sonner-toaster] {
+  font-family: var(--font-sans);
+}
+[data-sonner-toast][data-styled='true'].hd-toast {
+  gap: 10px;
+  padding: 14px 16px;
+  background: var(--hd-sheet);
+  color: var(--hd-ink);
+  border: 2px solid var(--hd-line);
+  border-radius: 4px;
+  box-shadow: 4px 4px 0 var(--hd-shadow);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+[data-sonner-toast][data-styled='true'].hd-toast:focus-visible {
+  outline: 3px solid var(--hd-focus);
+  outline-offset: 6px;
+}
+[data-sonner-toast][data-styled='true'].hd-toast [data-title] {
+  font-weight: 600;
+  line-height: 1.3;
+}
+[data-sonner-toast][data-styled='true'].hd-toast [data-description] {
+  color: var(--hd-ink-2);
+  font-weight: 400;
+}
+[data-sonner-toast][data-styled='true'].hd-toast [data-icon],
+[data-sonner-toast][data-styled='true'].hd-toast [data-icon] svg {
+  width: 18px;
+  height: 18px;
+}
+[data-sonner-toast][data-styled='true'].hd-toast--success [data-icon] {
+  color: var(--hd-success);
+}
+[data-sonner-toast][data-styled='true'].hd-toast--error {
+  border-color: #FF4100;
+}
+[data-sonner-toast][data-styled='true'].hd-toast--error [data-icon] {
+  color: var(--hd-danger-ink);
+}
+[data-sonner-toaster] [data-sonner-toast][data-styled='true'] [data-close-button].hd-toast__close {
+  background: var(--hd-sheet);
+  color: var(--hd-ink);
+  border: 2px solid var(--hd-line);
+}
+[data-sonner-toaster] [data-sonner-toast][data-styled='true']:hover [data-close-button].hd-toast__close:hover {
+  background: #FFE800;
+  color: #141416;
+  border-color: #141416;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .animate-spin {
+    animation-duration: 1s !important;
+    animation-iteration-count: infinite !important;
+  }
+}
+
+/* Windows high-contrast themes: drop the print effects that would turn into stray boxes or
+   doubled headings; keep the inks of the marks and status art. */
+@media (forced-colors: active) {
+  body,
+  dialog::backdrop,
+  .skeleton {
+    background-image: none;
+  }
+  .misreg-copy {
+    display: none;
+  }
+  .logomark,
+  .halftone,
+  .new-sticker {
+    forced-color-adjust: none;
+  }
+}
+
+/* increased contrast: board dots off, dotted rules solid, meta text one step darker */
+@media (prefers-contrast: more) {
+  body,
+  .skeleton {
+    background-image: none;
+  }
+  :root,
+  .dark {
+    --hd-ink-3: var(--hd-ink-2);
+    --hd-rule: var(--hd-ink-2);
+  }
+  .border-dotted,
+  .divide-dotted > :not(:last-child),
+  .leader {
+    border-style: solid;
+  }
+}
